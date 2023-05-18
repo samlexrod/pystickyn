@@ -17,11 +17,11 @@ A Python package for organizing your thoughts in sticky notes within a Jupyter N
 Install the package using pip:
 
 ```shell
-pip install pystickin
+pip install pystickyn
 ```
 
 ```python
-from pystickin import StickyNote
+from pystickyn import StickyNote
 
 # Instantiate the class
 sn = StickyNote()
