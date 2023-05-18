@@ -7,7 +7,7 @@ class StickyNote:
     BOOKMARK_TEMPLATE = """
     <div style="display: flex;">
       <div style="background-color: {color}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
-        <h3>{header}</h3>
+        <h3>@ {header}</h3>
         <p style="word-break: break-word;">{message}</p>
       </div>{code_div}
     </div>
@@ -20,7 +20,7 @@ class StickyNote:
         "validating": "rgb(173, 216, 230)",
         "warning": {
             "border": "#ff0000",
-            "background": "#ffcccc"
+            "background": "#F8C7C6"
         }
     }
 
@@ -70,4 +70,7 @@ class StickyNote:
     @staticmethod
     def warning(message: str, code: str = "") -> HTML:
         color = StickyNote.COLORS.get("warning")["background"]
-        border = StickyNote.COLORS.get
+        border = StickyNote.COLORS.get("warning")["border"]
+        code_div = StickyNote._get_code_div(code)
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Warning Note", color=color, message=message, border=border, code_div=code_div))
+
