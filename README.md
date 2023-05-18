@@ -21,10 +21,16 @@ pip install pystickin
 ```
 
 ```python
-from your_package_name import StickyNote
+from pystickin import StickyNote
+
+# Instantiate the class
+sn = StickyNote()
 
 # Create a completed note
-StickyNote.completed("This is a completed note.")
+sn.completed("This is a completed note.")
+sn.warning("This is a warning note.")
+sn.todo("This is a todo note.")
+sn.validation("This is a validation note.")
 ```
 
 
