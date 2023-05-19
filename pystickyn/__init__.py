@@ -7,8 +7,7 @@ class StickyNote:
     BOOKMARK_TEMPLATE = """
     <div style="display: flex;">
       <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
-        <h3>@ {
-            header}</h3>
+        <h3>@ {header}</h3>
         <p style="word-break: break-word;">{message}</p>
       </div>{code_div}
     </div>
@@ -49,7 +48,7 @@ class StickyNote:
             bcolor=bcolor, 
             message=message, 
             border="black",
-             code_div=code_div))
+            code_div=code_div))
 
     @staticmethod
     def working(message: str, code: str = "") -> HTML:
