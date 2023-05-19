@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pystickyn',
-    version='0.1.4',
+    version='0.1.5',
     author='Samuel Alexander Rodriguez',
     author_email='samlexrod@outlook.com',
     description='A package to organize your thoughts in sticky notes in a Jupyter Notebook.',
