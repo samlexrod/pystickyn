@@ -6,8 +6,9 @@ from IPython.display import HTML
 class StickyNote:
     BOOKMARK_TEMPLATE = """
     <div style="display: flex;">
-      <div style="background-color: {color}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
-        <h3>@ {header}</h3>
+      <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
+        <h3>@ {
+            header}</h3>
         <p style="word-break: break-word;">{message}</p>
       </div>{code_div}
     </div>
@@ -19,8 +20,9 @@ class StickyNote:
         "failed": "rgb(300, 25, 0)",
         "validating": "rgb(173, 216, 230)",
         "warning": {
-            "border": "#ff0000",
-            "background": "#F8C7C6"
+            "border": "#ff9800",
+            "background": "#fff3e0",
+            "color": "#ff5722"
         }
     }
 
@@ -39,38 +41,75 @@ class StickyNote:
 
     @staticmethod
     def completed(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("completed")
+        bcolor = StickyNote.COLORS.get("completed")
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Completed Note", color=color, message=message, border="black", code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Completed Note", 
+            tcolor="black",
+            bcolor=bcolor, 
+            message=message, 
+            border="black",
+             code_div=code_div))
 
     @staticmethod
     def working(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("working")
+        bcolor = StickyNote.COLORS.get("working")
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Working Note", color=color, message=message, border="black", code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Working Note", 
+            tcolor="black",
+            bcolor=bcolor, 
+            message=message, 
+            border="black",
+            code_div=code_div))
 
     @staticmethod
     def todo(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("todo")
+        bcolor = StickyNote.COLORS.get("todo")
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Todo Note", color=color, message=message, border="black", code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Todo Note", 
+            tcolor="black",
+            bcolor=bcolor, 
+            message=message, 
+            border="black",
+            code_div=code_div))
 
     @staticmethod
     def failed(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("failed")
+        bcolor = StickyNote.COLORS.get("failed")
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Debugging Note", color=color, message=message, border="black", code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Debugging Note", 
+            tcolor="black",
+            bcolor=bcolor, 
+            message=message, 
+            border="black",
+            code_div=code_div))
 
     @staticmethod
     def validating(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("validating")
+        bcolor = StickyNote.COLORS.get("validating")
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Validating Note", color=color, message=message, border="black", code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Validating Note", 
+            tcolor="black",
+            bcolor=bcolor, 
+            message=message, 
+            border="black",
+            code_div=code_div))
 
     @staticmethod
     def warning(message: str, code: str = "") -> HTML:
-        color = StickyNote.COLORS.get("warning")["background"]
+        tcolor = StickyNote.COLORS.get("warning")["color"]
+        bcolor = StickyNote.COLORS.get("warning")["background"]
         border = StickyNote.COLORS.get("warning")["border"]
         code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(header="Warning Note", color=color, message=message, border=border, code_div=code_div))
+        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
+            header="Warning Note", 
+            tcolor=tcolor,
+            bcolor=bcolor, 
+            message=message, 
+            border=border, 
+            code_div=code_div))
 
