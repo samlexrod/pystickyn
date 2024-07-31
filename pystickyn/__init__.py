@@ -2,6 +2,8 @@ import pygments
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 from IPython.display import HTML
+from functools import wraps
+
 
 class StickyNote:
     BOOKMARK_TEMPLATE = """
@@ -9,6 +11,7 @@ class StickyNote:
       <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
         <h3>@ {header}</h3>
         <p style="word-break: break-word;">{message}</p>
+        {bullet_div}
       </div>{code_div}
     </div>
     """
@@ -26,6 +29,17 @@ class StickyNote:
     }
 
     @staticmethod
+    def _get_bullet_div(bullets: list) -> str:
+        if bullets:
+            bullet_html = "<ul>"
+            for bullet in bullets:
+                bullet_html += f"<li>{bullet}</li>"
+            bullet_html += "</ul>"
+            return bullet_html
+        else:
+            return ""
+        
+    @staticmethod
     def _get_code_div(code: str) -> str:
         if code:
             highlighted_code = pygments.highlight(code, PythonLexer(), HtmlFormatter())
@@ -37,78 +51,72 @@ class StickyNote:
             """
         else:
             return ""
-
+        
     @staticmethod
-    def completed(message: str, code: str = "") -> HTML:
-        bcolor = StickyNote.COLORS.get("completed")
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Completed Note", 
-            tcolor="black",
-            bcolor=bcolor, 
-            message=message, 
-            border="black",
-            code_div=code_div))
+    def note_decorator(note_type: str):
+        def decorator(func):
+            @wraps(func)
+            def wrapper(self, *args, **kwargs) -> HTML:
+                # Check if positional arguments are provided
+                message = ""
+                code = ""
+                bullets = []
 
-    @staticmethod
-    def working(message: str, code: str = "") -> HTML:
-        bcolor = StickyNote.COLORS.get("working")
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Working Note", 
-            tcolor="black",
-            bcolor=bcolor, 
-            message=message, 
-            border="black",
-            code_div=code_div))
+                if args:
+                    message = args[0]
+                    if len(args) > 1:
+                        code = args[1]
+                        if isinstance(code, list):
+                            raise ValueError("The second unnamed argument is code, not a list")
+                    if len(args) > 2:
+                        bullets = args[2]
+                        if not isinstance(bullets, list):
+                            raise ValueError("The third unnamed argument is bullets, not a string")
+                
+                # Override with keyword arguments if provided
+                message = kwargs.pop('message', message)
+                code = kwargs.pop('code', code)
+                bullets = kwargs.pop('bullets', bullets)
 
-    @staticmethod
-    def todo(message: str, code: str = "") -> HTML:
-        bcolor = StickyNote.COLORS.get("todo")
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Todo Note", 
-            tcolor="black",
-            bcolor=bcolor, 
-            message=message, 
-            border="black",
-            code_div=code_div))
+                if not message:
+                    raise ValueError("Message is required")
 
-    @staticmethod
-    def failed(message: str, code: str = "") -> HTML:
-        bcolor = StickyNote.COLORS.get("failed")
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Debugging Note", 
-            tcolor="black",
-            bcolor=bcolor, 
-            message=message, 
-            border="black",
-            code_div=code_div))
+                bcolor = StickyNote.COLORS.get(note_type)
+                code_div = StickyNote._get_code_div(code)
+                bullet_div = StickyNote._get_bullet_div(bullets)
+                html = StickyNote.BOOKMARK_TEMPLATE.format(
+                    header=f"{note_type.capitalize()} Note", 
+                    tcolor="black",
+                    bcolor=bcolor, 
+                    message=message, 
+                    border="black",
+                    code_div=code_div,
+                    bullet_div=bullet_div
+                )
+                return HTML(html)
+            return wrapper
+        return decorator
+        
+    @note_decorator("completed")
+    def completed(self, *args, **kwargs) -> HTML:
+        pass
 
-    @staticmethod
-    def validating(message: str, code: str = "") -> HTML:
-        bcolor = StickyNote.COLORS.get("validating")
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Validating Note", 
-            tcolor="black",
-            bcolor=bcolor, 
-            message=message, 
-            border="black",
-            code_div=code_div))
+    @note_decorator("working")
+    def working(self, *args, **kwargs) -> HTML:
+        pass
 
-    @staticmethod
-    def warning(message: str, code: str = "") -> HTML:
-        tcolor = StickyNote.COLORS.get("warning")["color"]
-        bcolor = StickyNote.COLORS.get("warning")["background"]
-        border = StickyNote.COLORS.get("warning")["border"]
-        code_div = StickyNote._get_code_div(code)
-        return HTML(StickyNote.BOOKMARK_TEMPLATE.format(
-            header="Warning Note", 
-            tcolor=tcolor,
-            bcolor=bcolor, 
-            message=message, 
-            border=border, 
-            code_div=code_div))
+    @note_decorator("todo")
+    def todo(self, *args, **kwargs) -> HTML:
+        pass
 
+    @note_decorator("failed")
+    def failed(self, *args, **kwargs) -> HTML:
+        pass
+    
+    @note_decorator("validating")
+    def validating(self, *args, **kwargs) -> HTML:
+        pass
+
+    @note_decorator("warning")
+    def warning(self, *args, **kwargs) -> HTML:
+        pass

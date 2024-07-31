@@ -16,10 +16,10 @@ A Python package for organizing your thoughts in sticky notes within a Jupyter N
 
 Install the package using pip:
 
-> NOTE: In this pre-release stage, use the whl file in the pre_release directory to install the package.
+> NOTE: In this pre-release stage, you will have to install directly from the repository.
 
 ```shell
-pip install pystickyn-0.1.6-py3-none-any.whl
+pip install git+https://github.com/samlexrod/pystickyn.git
 ```
 
 ```python
