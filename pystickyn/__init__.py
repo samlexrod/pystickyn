@@ -1,8 +1,22 @@
 import pygments
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
-from IPython.display import HTML
+from IPython.display import HTML, display
 from functools import wraps
+
+
+class CodeObject:
+    def __init__(self, code: str):
+        self.code = code
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(code={self.code!r})"
+
+    def __str__(self):
+        return f"CodeObject with code: {self.code}"
+    
+    def get_code(self):
+        return self.code
 
 
 class StickyNote:
@@ -97,7 +111,8 @@ class StickyNote:
                     code_div=code_div,
                     bullet_div=bullet_div
                 )
-                return HTML(html)
+                display(HTML(html))
+                return CodeObject(self.code)
             return wrapper
         return decorator
         
