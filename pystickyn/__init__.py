@@ -21,8 +21,8 @@ class CodeObject:
 
 class StickyNote:
     BOOKMARK_TEMPLATE = """
-    <div style="display: flex;">
-      <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: sticky; top: 10px; z-index: 1; overflow: auto;">
+    <div style="display: flex; width: 100%; position: relative">
+      <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: relative; top: 10px; z-index: 1; overflow: scroll;">
         <h3>@ {header}</h3>
         <p style="word-break: break-word;">{message}</p>
         {bullet_div}
@@ -35,11 +35,7 @@ class StickyNote:
         "todo": "rgb(239, 133, 0)",
         "failed": "rgb(300, 25, 0)",
         "validating": "rgb(173, 216, 230)",
-        "warning": {
-            "border": "#ff9800",
-            "background": "#fff3e0",
-            "color": "#ff5722"
-        }
+        "warning": "#CF9C35"
     }
 
     def get_last_code(self):
@@ -61,13 +57,14 @@ class StickyNote:
         if code:
             highlighted_code = pygments.highlight(code, PythonLexer(), HtmlFormatter())
             return f"""
-                <div style="flex: 1; padding: 10px;">
+                <div style="flex: 1; padding: 10px; overflow: auto">
                     <h3>Code</h3>
-                    <pre>{highlighted_code}</pre>
+                    <pre style="white-space: pre-wrap; word-wrap: break-word;">{highlighted_code}</pre>
                 </div>
             """
         else:
             return ""
+
         
     @staticmethod
     def _note_decorator(note_type: str):
@@ -139,3 +136,5 @@ class StickyNote:
     @_note_decorator("warning")
     def warning(self, *args, **kwargs) -> HTML:
         pass
+
+sn = StickyNote()
