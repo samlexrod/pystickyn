@@ -28,6 +28,9 @@ class StickyNote:
         }
     }
 
+    def get_code(self):
+        return self.code
+
     @staticmethod
     def _get_bullet_div(bullets: list) -> str:
         if bullets:
@@ -53,7 +56,7 @@ class StickyNote:
             return ""
         
     @staticmethod
-    def note_decorator(note_type: str):
+    def _note_decorator(note_type: str):
         def decorator(func):
             @wraps(func)
             def wrapper(self, *args, **kwargs) -> HTML:
@@ -76,6 +79,7 @@ class StickyNote:
                 # Override with keyword arguments if provided
                 message = kwargs.pop('message', message)
                 code = kwargs.pop('code', code)
+                self.code
                 bullets = kwargs.pop('bullets', bullets)
 
                 if not message:
@@ -97,26 +101,26 @@ class StickyNote:
             return wrapper
         return decorator
         
-    @note_decorator("completed")
+    @_note_decorator("completed")
     def completed(self, *args, **kwargs) -> HTML:
         pass
 
-    @note_decorator("working")
+    @_note_decorator("working")
     def working(self, *args, **kwargs) -> HTML:
         pass
 
-    @note_decorator("todo")
+    @_note_decorator("todo")
     def todo(self, *args, **kwargs) -> HTML:
         pass
 
-    @note_decorator("failed")
+    @_note_decorator("failed")
     def failed(self, *args, **kwargs) -> HTML:
         pass
     
-    @note_decorator("validating")
+    @_note_decorator("validating")
     def validating(self, *args, **kwargs) -> HTML:
         pass
 
-    @note_decorator("warning")
+    @_note_decorator("warning")
     def warning(self, *args, **kwargs) -> HTML:
         pass
