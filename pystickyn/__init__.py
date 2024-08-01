@@ -28,7 +28,7 @@ class StickyNote:
         }
     }
 
-    def get_code(self):
+    def get_last_code(self):
         return self.code
 
     @staticmethod
@@ -79,7 +79,7 @@ class StickyNote:
                 # Override with keyword arguments if provided
                 message = kwargs.pop('message', message)
                 code = kwargs.pop('code', code)
-                self.code
+                self.code = code
                 bullets = kwargs.pop('bullets', bullets)
 
                 if not message:
