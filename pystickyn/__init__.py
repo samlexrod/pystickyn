@@ -4,7 +4,6 @@ from pygments.formatters import HtmlFormatter
 from IPython.display import HTML, display
 from functools import wraps
 
-
 class CodeObject:
     def __init__(self, code: str):
         self.code = code
@@ -22,7 +21,7 @@ class CodeObject:
 class StickyNote:
     BOOKMARK_TEMPLATE = """
     <div style="display: flex; width: 100%; position: relative">
-      <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: relative; top: 10px; z-index: 1; overflow: scroll;">
+      <div style="color: {tcolor}; background-color: {bcolor}; border: 1px solid {border}; padding: 10px; width: 200px; position: relative; top: 10px; z-index: 1;">
         <h3>@ {header}</h3>
         <p style="word-break: break-word;">{message}</p>
         {bullet_div}
@@ -57,7 +56,7 @@ class StickyNote:
         if code:
             highlighted_code = pygments.highlight(code, PythonLexer(), HtmlFormatter())
             return f"""
-                <div style="flex: 1; padding: 10px; overflow: auto">
+                <div style="flex: 1; padding: 10px; overflow: scroll">
                     <h3>Code</h3>
                     <pre style="white-space: pre-wrap; word-wrap: break-word;">{highlighted_code}</pre>
                 </div>
