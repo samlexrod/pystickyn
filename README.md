@@ -1,7 +1,5 @@
 # pystickyn
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/your_username/your_repository/blob/main/LICENSE)
-
 A Python package for organizing your thoughts in sticky notes within a Jupyter Notebook.
 
 ## Features
