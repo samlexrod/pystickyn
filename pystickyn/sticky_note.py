@@ -74,19 +74,28 @@ class StickyNote:
         else:
             raise ValueError("Interactive parameter must be a globals() dictionary or the globals function")
 
-    @staticmethod
-    def _get_todo_list(todo: list) -> widgets.VBox:
+        # Initialize a global dictionary for checkboxes
+        if 'checkbox_states' not in self.global_namespace:
+            self.global_namespace['checkbox_states'] = {}
+
+    def _update_checkbox_state(self, change):
+        self.global_namespace['checkbox_states'][change['owner'].description] = change['new']
+
+    def _get_todo_list(self, todo: list) -> widgets.VBox:
         if todo:
             checkboxes = []
-            for bullet in todo:
+            for item in todo:
+                checkbox_value = self.global_namespace['checkbox_states'].get(item, False)
                 checkbox = widgets.Checkbox(
-                    value=False,
-                    description=bullet,
+                    value=checkbox_value,
+                    description=item,
                     disabled=False,
                     indent=False
                 )
+                # Attach the event handler
+                checkbox.observe(self._update_checkbox_state, names='value')
                 checkboxes.append(checkbox)
-                header = widgets.HTML(value='<h3 style="margin: 0">Todo</h3>')
+            header = widgets.HTML(value='<h3 style="margin: 0">Todo</h3>')
             return widgets.VBox([header] + checkboxes)
         else:
             return widgets.VBox()
@@ -169,7 +178,7 @@ class StickyNote:
 
                 bcolor = StickyNote.COLORS.get(note_type)
                 code_div = self._get_code_div(code)
-                todo_list = StickyNote._get_todo_list(todo)
+                todo_list = self._get_todo_list(todo)
 
                 warning_html = ""
                 if func.__name__ == "validating":
@@ -200,7 +209,7 @@ class StickyNote:
                     note_type=note_type.capitalize(), 
                     message_html=message_html, 
                     warning_html=warning_html,
-                    bullet_div=""  # Remove the bullet div from the message HTML
+                    todo_div=""  # Remove the todo div from the message HTML
                 )
 
                 bookmark_display = widgets.HTML(value=bookmark_html)
