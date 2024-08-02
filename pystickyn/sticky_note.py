@@ -200,6 +200,13 @@ class StickyNote:
                         border-left: 5px solid #444;
                         padding-left: 5px;
                     }}
+                    code {{
+                        color: dimgray;
+                        border-radius: 3px;
+                        display: block;
+                        margin: 0 0 10px;
+                        white-space: pre-wrap;
+                    }}
                 </style>
                 {message_html}
                 """
