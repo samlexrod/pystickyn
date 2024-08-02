@@ -146,6 +146,30 @@ class StickyNote:
                 return widgets.VBox([code_display])
         else:
             return widgets.VBox()
+        
+    @staticmethod
+    def format_markdown_code(message: str):
+        message_lines = message.split('\n')
+        new_lines = []
+        mcode_format_issue_found = 0
+        for index, line in enumerate(message_lines):
+
+            # Modify markdown code formatting
+            if line.strip() == '```' and mcode_format_issue_found == 0:
+                # Ignore the line
+                mcode_format_issue_found = 1
+            elif mcode_format_issue_found == 1:
+                # Add the ``` to the line
+                new_mcode_line = f"```{line}"
+                new_lines.append(new_mcode_line)
+                mcode_format_issue_found = 0  
+            else:
+                # Keep the line as is
+                new_lines.append(line)
+
+        message = '\n'.join(new_lines)
+        return message
+
 
     @staticmethod
     def _note_decorator(note_type: str):
@@ -191,6 +215,7 @@ class StickyNote:
 
                 # Convert Markdown to HTML
                 message = self.normalize_indentation(message)
+                message = StickyNote.format_markdown_code(message)
                 message_html = markdown2.markdown(message)
                 message_html = f"""
                 <style>
