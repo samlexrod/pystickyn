@@ -37,8 +37,20 @@ class StickyNote:
         ">
         <h3 style="margin: 0">@ {note_type} Note</h3>
         <p style="word-break: break-word;">{message_html}</p>
-        {bullet_div}
         {warning_html}
+    </div>
+    """
+    CODE_HTML = """
+    <div style="
+        flex: 1; 
+        padding: 10px; 
+        overflow: scroll; 
+        border: 1px dotted darkgray; 
+        border-radius: 5px;
+        margin-right: 10px;
+        ">
+        <h3 style="margin: 0">Code</h3>
+        <pre style="white-space: pre-wrap; word-wrap: break-word;">{highlighted_code}</pre>
     </div>
     """
 
@@ -62,17 +74,22 @@ class StickyNote:
         else:
             raise ValueError("Interactive parameter must be a globals() dictionary or the globals function")
 
-
     @staticmethod
-    def _get_bullet_div(bullets: list) -> str:
-        if bullets:
-            bullet_html = "<ul>"
-            for bullet in bullets:
-                bullet_html += f"<li>{bullet}</li>"
-            bullet_html += "</ul>"
-            return bullet_html
+    def _get_todo_list(todo: list) -> widgets.VBox:
+        if todo:
+            checkboxes = []
+            for bullet in todo:
+                checkbox = widgets.Checkbox(
+                    value=False,
+                    description=bullet,
+                    disabled=False,
+                    indent=False
+                )
+                checkboxes.append(checkbox)
+                header = widgets.HTML(value='<h3 style="margin: 0">Todo</h3>')
+            return widgets.VBox([header] + checkboxes)
         else:
-            return ""
+            return widgets.VBox()
 
     @staticmethod
     def normalize_indentation(code: str) -> str:
@@ -113,18 +130,7 @@ class StickyNote:
 
             run_button.on_click(on_run_button_clicked)
 
-            code_display = widgets.HTML(value=f"""
-                <div style="
-                    flex: 1; 
-                    padding: 10px; 
-                    overflow: scroll; 
-                    border: 1px dotted darkgray; 
-                    border-radius: 5px;
-                    ">
-                    <h3 style="margin: 0">Code</h3>
-                    <pre style="white-space: pre-wrap; word-wrap: break-word;">{highlighted_code}</pre>
-                </div>
-            """)
+            code_display = widgets.HTML(value=self.CODE_HTML.format(highlighted_code=highlighted_code))
             if self.interactive:
                 return widgets.VBox([code_display, run_button, output_area])
             else:
@@ -140,7 +146,7 @@ class StickyNote:
                 # Check if positional arguments are provided
                 message = ""
                 code = ""
-                bullets = []
+                todo = []
 
                 if len(args) > 0:
                     message = args[0]
@@ -149,21 +155,21 @@ class StickyNote:
                         if isinstance(code, list):
                             raise ValueError("The second unnamed argument is code, not a list")
                     if len(args) > 2:
-                        bullets = args[2]
-                        if not isinstance(bullets, list):
-                            raise ValueError("The third unnamed argument is bullets, not a string")
+                        todo = args[2]
+                        if not isinstance(todo, list):
+                            raise ValueError("The third unnamed argument is todo, not a string")
 
                 # Override with keyword arguments if provided
                 message = kwargs.pop('message', message)
                 code = kwargs.pop('code', code)
-                bullets = kwargs.pop('bullets', bullets)
+                todo = kwargs.pop('todo', todo)
 
                 if not message:
                     raise ValueError("Message is required")
 
                 bcolor = StickyNote.COLORS.get(note_type)
                 code_div = self._get_code_div(code)
-                bullet_div = StickyNote._get_bullet_div(bullets)
+                todo_list = StickyNote._get_todo_list(todo)
 
                 warning_html = ""
                 if func.__name__ == "validating":
@@ -193,13 +199,13 @@ class StickyNote:
                     bcolor=bcolor, 
                     note_type=note_type.capitalize(), 
                     message_html=message_html, 
-                    bullet_div=bullet_div, 
-                    warning_html=warning_html
+                    warning_html=warning_html,
+                    bullet_div=""  # Remove the bullet div from the message HTML
                 )
 
                 bookmark_display = widgets.HTML(value=bookmark_html)
                 hbox_layout = Layout(display='flex', flex_flow='row', padding='10px')
-                display(widgets.HBox([bookmark_display, code_div], layout=hbox_layout))
+                display(widgets.HBox([bookmark_display, code_div, todo_list], layout=hbox_layout))
 
                 return CodeObject(code)
             return wrapper
