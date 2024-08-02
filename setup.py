@@ -11,8 +11,10 @@ setup(
     url='https://github.com/samlexrod/pystickyn',
     packages=find_packages(),
     install_requires=[
-        'pygments',
-        'ipython',
+        'pygments>=2.18.0',
+        'ipython>=8.26.0',
+        'ipywidgets>=8.1.3',
+        'markdown2>=2.4.0',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

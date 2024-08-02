@@ -6,6 +6,7 @@ from IPython.display import HTML, display
 import ipywidgets as widgets
 from ipywidgets import Layout
 from functools import wraps
+import markdown2
 
 class CodeObject:
     def __init__(self, code: str):
@@ -21,6 +22,26 @@ class CodeObject:
         return self.code
 
 class StickyNote:
+    MESSAGE_HTML = """
+    <div style="
+        color: black; 
+        background-color: {bcolor}; 
+        border: 1px solid rgb(90 89 89); 
+        padding: 10px; 
+        width: 200px; 
+        position: relative;
+        margin-right: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        z-index: 1;
+        ">
+        <h3 style="margin: 0">@ {note_type} Note</h3>
+        <p style="word-break: break-word;">{message_html}</p>
+        {bullet_div}
+        {warning_html}
+    </div>
+    """
+
     COLORS = {
         "completed": "rgb(76, 175, 80)",        # Green
         "working": "rgb(255, 235, 59)",         # Yellow
@@ -31,7 +52,6 @@ class StickyNote:
         "warning": "rgb(255, 193, 7)"           # Amber
     }
 
-
     def __init__(self, interactive=None):
         if interactive is None:
             self.global_namespace = globals()
@@ -41,7 +61,8 @@ class StickyNote:
             self.interactive = True
         else:
             raise ValueError("Interactive parameter must be a globals() dictionary or the globals function")
-        
+
+
     @staticmethod
     def _get_bullet_div(bullets: list) -> str:
         if bullets:
@@ -153,25 +174,28 @@ class StickyNote:
                     </div>
                     """
 
-                bookmark_html = f"""
-                <div style="
-                    color: black; 
-                    background-color: {bcolor}; 
-                    border: 1px solid rgb(90 89 89); 
-                    padding: 10px; 
-                    width: 200px; 
-                    position: relative;
-                    margin-right: 10px;
-                    border-radius: 5px;
-                    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-                    z-index: 1;
-                    ">
-                    <h3 style="margin: 0">@ {note_type.capitalize()} Note</h3>
-                    <p style="word-break: break-word;">{message}</p>
-                    {bullet_div}
-                    {warning_html}
-                </div>
+                # Convert Markdown to HTML
+                message = self.normalize_indentation(message)
+                message_html = markdown2.markdown(message)
+                message_html = f"""
+                <style>
+                    blockquote {{
+                        background-color: #333;
+                        color: white;
+                        border-left: 5px solid #444;
+                        padding-left: 5px;
+                    }}
+                </style>
+                {message_html}
                 """
+
+                bookmark_html = StickyNote.MESSAGE_HTML.format(
+                    bcolor=bcolor, 
+                    note_type=note_type.capitalize(), 
+                    message_html=message_html, 
+                    bullet_div=bullet_div, 
+                    warning_html=warning_html
+                )
 
                 bookmark_display = widgets.HTML(value=bookmark_html)
                 hbox_layout = Layout(display='flex', flex_flow='row', padding='10px')
