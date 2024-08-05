@@ -29,8 +29,6 @@ class StickyNote:
         background-color: {bcolor}; 
         border: 1px solid rgb(90 89 89); 
         padding: 10px; 
-        max-width: 200px; 
-        margin-right: 10px;
         border-radius: 5px;
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
         z-index: 1;
@@ -251,10 +249,10 @@ class StickyNote:
                 bookmark_display = widgets.HTML(value=bookmark_html)
                 hbox_layout = Layout(
                     display='grid', 
-                    grid_template_columns='auto auto auto',
+                    grid_template_rows='auto auto auto',
                     padding='10px'
                     )
-                display(widgets.HBox([bookmark_display, code_div, todo_list], layout=hbox_layout))
+                display(widgets.HBox([bookmark_display, todo_list, code_div], layout=hbox_layout))
 
                 return CodeObject(code)
             return wrapper
