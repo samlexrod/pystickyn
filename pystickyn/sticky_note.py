@@ -47,7 +47,7 @@ class StickyNote:
         flex: 1; 
         padding: 10px; 
         overflow: scroll; 
-        border: 1px dotted darkgray; 
+        # border: 1px dotted darkgray; 
         border-radius: 5px;
         margin-right: 10px;
         ">
@@ -199,7 +199,6 @@ class StickyNote:
 
                 # Convert Markdown to HTML
                 message = self.normalize_indentation(message)
-                print(message)
                 message_html = markdown2.markdown(message, extras=["fenced-code-blocks"])
                 message_html = f"""
                 <style>
