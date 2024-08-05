@@ -24,16 +24,19 @@ class CodeObject:
 class StickyNote:
     MESSAGE_HTML = """
     <div style="
+        position: relative;
         color: black; 
         background-color: {bcolor}; 
         border: 1px solid rgb(90 89 89); 
         padding: 10px; 
-        width: 200px; 
-        position: relative;
+        max-width: 200px; 
         margin-right: 10px;
         border-radius: 5px;
         box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
         z-index: 1;
+        overflow: hidden;
+        word-wrap: break-word;
+        white-space: normal;
         ">
         <h3 style="margin: 0">@ {note_type} Note</h3>
         <p style="word-break: break-word;">{message_html}</p>
@@ -227,6 +230,7 @@ class StickyNote:
                     }}
                     code {{
                         color: dimgray;
+                        background-color: #f9f2f4;
                         border-radius: 3px;
                         display: block;
                         margin: 0 0 10px;
@@ -245,7 +249,11 @@ class StickyNote:
                 )
 
                 bookmark_display = widgets.HTML(value=bookmark_html)
-                hbox_layout = Layout(display='flex', flex_flow='row', padding='10px')
+                hbox_layout = Layout(
+                    display='grid', 
+                    grid_template_columns='auto auto auto',
+                    padding='10px'
+                    )
                 display(widgets.HBox([bookmark_display, code_div, todo_list], layout=hbox_layout))
 
                 return CodeObject(code)
