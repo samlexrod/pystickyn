@@ -87,7 +87,11 @@ class StickyNote:
         if todo:
             checkboxes = []
             for item in todo:
-                checkbox_value = self.global_namespace['checkbox_states'].get(item, False)
+                if "*" in item:
+                    item = item.replace("*", "")
+                    checkbox_value = True
+                else:
+                    checkbox_value = self.global_namespace['checkbox_states'].get(item, False)
                 checkbox = widgets.Checkbox(
                     value=checkbox_value,
                     description=item,
