@@ -35,6 +35,7 @@ class StickyNote:
         overflow: hidden;
         word-wrap: break-word;
         white-space: normal;
+        width: fit-content;
         ">
         <h3 style="margin: 0">@ {note_type} Note</h3>
         <p style="word-break: break-word;">{message_html}</p>
@@ -91,7 +92,8 @@ class StickyNote:
                     value=checkbox_value,
                     description=item,
                     disabled=False,
-                    indent=False
+                    indent=False,
+                    layout = Layout(width='fit-content')
                 )
                 # Attach the event handler
                 checkbox.observe(self._update_checkbox_state, names='value')
@@ -225,11 +227,13 @@ class StickyNote:
                         color: white;
                         border-left: 5px solid #444;
                         padding-left: 5px;
+                        width: fit-content
                     }}
                     code {{
                         color: dimgray;
                         background-color: #f9f2f4;
                         border-radius: 3px;
+                        width: fit-content;
                         display: block;
                         margin: 0 0 10px;
                         white-space: pre-wrap;
@@ -249,7 +253,7 @@ class StickyNote:
                 bookmark_display = widgets.HTML(value=bookmark_html)
                 hbox_layout = Layout(
                     display='grid', 
-                    grid_template_rows='auto auto auto',
+                    grid_template_rows='fit-content(100%) fit-content(100%) fit-content(100%)',
                     padding='10px'
                     )
                 display(widgets.HBox([bookmark_display, todo_list, code_div], layout=hbox_layout))
